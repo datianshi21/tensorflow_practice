@@ -1,11 +1,13 @@
 import tensorflow as tf
+import matplotlib.pyplot as plt
 from tensorflow.examples.tutorials.mnist import input_data
 
 mnist = input_data.read_data_sets('MNIST_data',one_hot=True)
 
 
 lr= 0.001
-training_iters = 1000000
+#training_iters = 1000000
+training_iters = 100000
 batch_size = 128
 
 n_inputs = 28
@@ -59,8 +61,8 @@ accuracy = tf.reduce_mean(tf.cast(correct_pred,tf.float32))
 
 init = tf.global_variables_initializer()
 
+acc_array = []
 with tf.Session() as sess:
-
     sess.run(init)
     step = 0
     while step * batch_size < training_iters:
@@ -69,7 +71,10 @@ with tf.Session() as sess:
         batch_xs = batch_xs.reshape([batch_size,n_steps,n_inputs])
         sess.run(train_step,feed_dict={xs:batch_xs,ys:batch_ys})
         if step % 20 == 0:
-            print(sess.run(accuracy, feed_dict={xs: batch_xs, ys: batch_ys}))
-
+            acc = sess.run(accuracy, feed_dict={xs: batch_xs, ys: batch_ys})
+            print (acc)
+            acc_array.append(acc)
         step = step + 1
+plt.plot(acc_array)
+plt.show()
 
